@@ -1,10 +1,36 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
-const Home: NextPage = () => {
+export async function getServerSideProps() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/todos')
+  const data = await res.json()
+
+  return {
+    props: {
+      todos: data,
+    },
+  }
+}
+
+const Home: NextPage = ({ todos }) => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
+      {todos?.length === 0 ? (
+        <div>Loading...</div>
+      ) : (
+        <div>
+          {todos?.map((todos: any) => (
+            <div key={todos['id']}>
+              <p>
+                {todos['id']}: {todos['title']}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
